@@ -12,6 +12,8 @@ public class MyServer  {
     ObjectOutputStream oos=null;
     ObjectInputStream ois=null;
 
+    private final String upload_path = "UploadFile\\";
+
     public static void main(String[] args)  {
         try{
             new MyServer();
@@ -40,7 +42,7 @@ public class MyServer  {
                     req = (Request)ois.readObject();
 
                     //控制台显示请求
-                    System.out.println("action: "+req.getAction()+"\n"+req.toString()+"\n");
+                    System.out.println("action: "+req.getAction()+"\n"+req.getParam()+"   "+req.getObjReq()+"\n");
 
                     switch (req.getAction()){
                         case "login":
@@ -102,6 +104,40 @@ public class MyServer  {
                             }
 
                             oos.writeObject(new Response(true,null,null,data));
+                            break;
+                        }
+                        case "downloadFile":
+                        {
+                            String file_id = req.getParam();
+                            File fs;
+                            Doc doc;
+                            FileInputStream fis=null;
+                            DataOutputStream dos=null;
+
+                            if((doc=DataProcessing.searchDoc(file_id))!=null){
+                                fs = new File(this.upload_path+doc.getFilename());
+                                fis = new FileInputStream(fs);
+                                dos = new DataOutputStream(s.getOutputStream());
+
+                                //Start to copyfile
+                                oos.writeObject(new Response(true,null,null));
+                                System.out.println("开始发送文件...");
+                                dos.writeLong(fs.length());
+
+                                final int buffer_size = 1024 * 1024;
+                                int rLength;
+                                byte[] buffer = new byte[buffer_size];
+                                while((rLength=fis.read(buffer))!=-1){
+                                    dos.write(buffer,0,rLength);
+                                    dos.flush();
+                                }
+                                System.out.println("Done!!");
+
+                                oos.writeObject(new Response(true,null,"copy over"));
+                                fis.close();
+                            }else{
+                                oos.writeObject(new Response(false,null,"cannot find file!!"));
+                            }
                             break;
                         }
 
