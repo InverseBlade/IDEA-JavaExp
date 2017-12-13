@@ -11,7 +11,6 @@ public abstract class User implements Serializable {
 	private String name;
 	private String password;
 	private String role;
-	protected final String serve_path = "UploadFile\\";
 	protected Socket s;
 	protected ObjectOutputStream oos;
 	protected ObjectInputStream ois;
