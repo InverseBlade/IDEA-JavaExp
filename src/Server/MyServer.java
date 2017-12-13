@@ -140,6 +140,41 @@ public class MyServer  {
                             }
                             break;
                         }
+                        case "uploadFile":
+                        {
+                            String[] f_info = req.getParam().split("[|]");
+                            String fName;
+                            File ft;
+                            FileOutputStream fos;
+                            DataInputStream dis;
+                            int rLength;
+                            Long size, count=0L;
+                            final int buffer_size = 1024*1024;
+                            byte[] buffer = new byte[buffer_size];
+
+                            if(DataProcessing.insertDoc(f_info[0],f_info[1],f_info[2])){
+                                fName = f_info[2];
+                                ft = new File(upload_path + fName);
+                                fos = new FileOutputStream(ft);
+                                dis = new DataInputStream(s.getInputStream());
+
+                                oos.writeObject(new Response(true,null,"ready"));
+                                size = dis.readLong();
+                                while((rLength=dis.read(buffer))!=-1){
+                                    fos.write(buffer,0,rLength);
+                                    fos.flush();
+                                    count += rLength;
+                                    if(count >= size)
+                                        break;
+                                }
+                                oos.writeObject(new Response(true,null,"finished"));
+
+                                fos.close();
+                            }else{
+                                oos.writeObject(new Response(false,null,"upload failed!"));
+                            }
+                            break;
+                        }
 
                         default:
                             break;
