@@ -5,9 +5,7 @@ import java.net.*;
 import javax.swing.*;
 
 import java.io.*;
-import java.sql.SQLException;
 
-import fileManage.DataProcessing;
 import common.*;
 
 public class Login extends JFrame implements ActionListener {

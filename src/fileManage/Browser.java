@@ -13,8 +13,6 @@ public class Browser extends User {
 	
 	public void showMenu(){
 		new UI_Browser(this);
-		//back.menu3.setVisible(false);
-		//back.item9.setVisible(false);
 	}
 }
 

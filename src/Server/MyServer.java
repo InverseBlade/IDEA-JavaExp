@@ -24,7 +24,7 @@ public class MyServer  {
 
     public MyServer() throws Exception {
         try{
-            Class.forName("fileManage.DataProcessing");
+            Class.forName("Server.DataProcessing");
             ss = new ServerSocket(2017);
 
             boolean ext;
@@ -123,6 +123,7 @@ public class MyServer  {
                                 oos.writeObject(new Response(true,null,null));
                                 System.out.println("开始发送文件...");
                                 dos.writeLong(fs.length());
+                                System.out.println(fs.length());
 
                                 final int buffer_size = 1024 * 1024;
                                 int rLength;
@@ -133,8 +134,8 @@ public class MyServer  {
                                 }
                                 System.out.println("Done!!");
 
-                                oos.writeObject(new Response(true,null,"copy over"));
-                                fis.close();
+                                if(((Request)ois.readObject()).getParam().equals("download is ok"))
+                                    fis.close();
                             }else{
                                 oos.writeObject(new Response(false,null,"cannot find file!!"));
                             }
@@ -173,6 +174,42 @@ public class MyServer  {
                             }else{
                                 oos.writeObject(new Response(false,null,"upload failed!"));
                             }
+                            break;
+                        }
+                        case "addUser":
+                        {
+                            String[] param = req.getParam().split("[|]");
+
+                            if(DataProcessing.insertUser(param[0], param[1], param[2])){
+                                oos.writeObject(new Response(true,null,null));
+                            }else{
+                                oos.writeObject(new Response(false,"用户已存在!",null));
+                            }
+
+                            break;
+                        }
+                        case "updateUser":
+                        {
+                            String[] param = req.getParam().split("[|]");
+
+                            if(DataProcessing.updateUser(param[0], param[1], param[2])){
+                                oos.writeObject(new Response(true,null,null));
+                            }else{
+                                oos.writeObject(new Response(false,"更新用户失败!",null));
+                            }
+
+                            break;
+                        }
+                        case "deleteUser":
+                        {
+                            String param = req.getParam();
+
+                            if(DataProcessing.deleteUser(param)){
+                                oos.writeObject(new Response(true,null,null));
+                            }else{
+                                oos.writeObject(new Response(false,"用户不存在!",null));
+                            }
+
                             break;
                         }
 

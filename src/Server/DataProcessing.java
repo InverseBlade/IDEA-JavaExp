@@ -1,5 +1,9 @@
-package fileManage;
-import javax.xml.crypto.Data;
+package Server;
+import fileManage.Administrator;
+import fileManage.Browser;
+import fileManage.Operator;
+import fileManage.User;
+
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.sql.*;

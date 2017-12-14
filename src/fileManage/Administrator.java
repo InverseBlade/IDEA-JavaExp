@@ -16,49 +16,39 @@ public class Administrator extends User {
 	}
 	
 	public boolean changeUserInfo(String name, String passwd, String role){
-		try{
-			if(DataProcessing.updateUser(name, passwd, role)){
-				return true;
-			}else{
-				return false;
-			}
-		}catch(SQLException err){
-			return false;
-		}catch(IllegalStateException err){
-			return false;
-		}
+        try{
+            oos.writeObject(new Request("updateUser",name+"|"+passwd+"|"+role));
+            if(((Response)ois.readObject()).isIfRun()){
+                return true;
+            }
+        }catch (Exception err){
+            err.printStackTrace();
+        }
+        return false;
 	}
 	
 	public boolean delUser(String name){
 		try{
-			if(DataProcessing.deleteUser(name)){
-				return true;
-			}else{
-				return false;
-			}
-		}catch(SQLException err){
-			System.out.println("删除失败: "+err.toString());
-			return false;
-		}catch(IllegalStateException err){
-			System.out.println("删除失败: "+err.toString());
-			return false;
+		    oos.writeObject(new Request("deleteUser",name));
+		    if(((Response)ois.readObject()).isIfRun()){
+		        return true;
+            }
+		}catch(Exception err){
+			err.printStackTrace();
 		}
+		return false;
 	}
 	
 	public boolean addUser(String name, String passwd, String role){
 		try{
-			if(DataProcessing.insertUser(name,passwd,role)){
-				return true;
-			}else{
-				return false;
-			}
-		}catch(SQLException err){
-			System.out.println("添加失败: "+err.toString());
-			return false;
-		}catch(IllegalStateException err){
-			System.out.println("添加失败: "+err.toString());
-			return false;
+			oos.writeObject(new Request("addUser",name+"|"+passwd+"|"+role));
+			if(((Response)ois.readObject()).isIfRun()){
+			    return true;
+            }
+		}catch(Exception err){
+		    err.printStackTrace();
 		}
+		return false;
 	}
 	
 	public String[][] listUser(){
@@ -78,7 +68,5 @@ public class Administrator extends User {
 	
 	public void showMenu(){
 		new UI_Administrator(this);
-		//back.item9.setVisible(false);
-		//back.menu3.setVisible(true);
 	}
 }

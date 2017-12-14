@@ -1,10 +1,9 @@
 package fileManage;
+import Server.Doc;
 import common.Request;
 import common.Response;
 
 import java.net.Socket;
-import java.sql.SQLException;
-import java.util.*;
 import java.io.*;
 
 public abstract class User implements Serializable {
@@ -122,6 +121,7 @@ public abstract class User implements Serializable {
                 fos = new FileOutputStream(ft);
                 dis = new DataInputStream(this.s.getInputStream());
                 Long fLength = dis.readLong();
+                System.out.println(fLength);
                 Long count=0L;
 
                 while((rLength=dis.read(buffer))!=-1){
@@ -133,27 +133,24 @@ public abstract class User implements Serializable {
                 }
                 System.out.println("Done!!");
 
-                if(((Response)this.ois.readObject()).isIfRun()){
-                    fos.close();
-                    return true;
-                }
-            }else{
-                return false;
+                this.oos.writeObject(new Request(null,"download is ok"));
+                fos.close();
+                return true;
             }
 		}catch(Exception err){
 			System.out.println("下载出错:"+err);
-			return false;
 		}
 		return false;
 	}
 	
 	public boolean changeSelfInfo(String password){
 		try{
-			if(this.setPassword(password.trim())){
-				return DataProcessing.updateUser(this.name, password, this.role);
-			}else{
-				return false;
-			}
+			this.oos.writeObject(new Request("updateUser",getName()+"|"+password+"|"+getRole()));
+			if(((Response)this.ois.readObject()).isIfRun()){
+			    return true;
+            }else{
+			    return false;
+            }
 		}catch(Exception err){
 			return false;
 		}
