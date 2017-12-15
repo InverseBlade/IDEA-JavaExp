@@ -6,27 +6,39 @@ import java.awt.event.*;
 
 public class DownloadDialog extends JDialog implements ActionListener, WindowListener {
     public JLabel jl2 = new JLabel("");
+    public JProgressBar jp = new JProgressBar();
 
     public void actionPerformed(ActionEvent e){
         this.dispose();
     }
 
-    public DownloadDialog(JFrame parent) {
-        super(parent,"文件下载",true);
+    public DownloadDialog(JFrame parent, String title) {
+        super(parent,title,true);
 
-        //JButton jb1 = new JButton("close");
-        //jb1.addActionListener(this);
-        //this.add(jb1);
-        JLabel jl1 = new JLabel("正在下载中，请稍等。。。");
-        this.add(jl1);
-        this.add(jl2);
+        JPanel p1 = new JPanel();
+        JPanel p2 = new JPanel();
+        JPanel p3 = new JPanel();
+        JLabel jl1 = new JLabel("正在"+title+"中，请稍等。。。");
+
+        this.getContentPane().setLayout(new GridLayout(3,1));
+        p1.add(jl1);
+        p2.add(jl2);
+        p3.add(jp);
+        jp.setBorderPainted(true);
+        jp.setMinimum(0);
+        jp.setMaximum(100);
+        jp.setValue(0);
+
+        this.add(p1);
+        this.add(p2);
+        this.add(p3);
 
         this.setSize(200,200);
         this.setBounds(parent.getX()+(parent.getWidth()-getWidth())/2,parent.getY()+(parent.getHeight()-getHeight())/2,getWidth(),getHeight());
         this.setResizable(false);
-        this.addWindowListener(this);
+        //this.addWindowListener(this);
+        this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         this.setUndecorated(false);
-        //this.setVisible(true);
     }
 
     @Override
@@ -36,7 +48,8 @@ public class DownloadDialog extends JDialog implements ActionListener, WindowLis
 
     @Override
     public void windowClosing(WindowEvent e) {
-        //this.dispose();
+        JOptionPane.showMessageDialog(null,"还没下载完!!");
+        this.setVisible(true);
     }
 
     @Override

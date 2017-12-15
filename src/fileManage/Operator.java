@@ -15,7 +15,7 @@ public class Operator extends User{
 		setRole(role);
 	}
 	
-	public boolean uploadFile(String fsName, String descr){
+	public boolean uploadFile(String fsName, String descr, DownloadDialog progress){
 		final int buffer_space = 1024*1024;
 		String fileName;
 		File fs;
@@ -37,9 +37,19 @@ public class Operator extends User{
 
 		        dos.writeLong(fs.length());
 		        int rLength;
+		        Long count=0L;
+		        double complete=0.;
+		        String temp=null;
 		        while((rLength=fis.read(buffer))!=-1){
 		            dos.write(buffer,0,rLength);
 		            dos.flush();
+		            count += rLength;
+                    if(progress!=null){
+                        complete = (1.0*count/fs.length()*100);
+                        temp = String.valueOf(complete);
+                        progress.jl2.setText("已上传"+temp.substring(0,temp.indexOf(".")+2)+"%");
+                        progress.jp.setValue((int)complete);
+                    }
                 }
                 if(((Response) ois.readObject()).isIfRun()){
 		            fis.close();

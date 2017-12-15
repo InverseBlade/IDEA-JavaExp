@@ -65,7 +65,7 @@ public class UI_Browser extends JFrame implements ActionListener {
                 fileName.setFile((String)jt1.getModel().getValueAt(item,4));
                 fileName.setVisible(true);
                 if(fileName.getFile()!=null){
-                    DownloadDialog d = new DownloadDialog(this);
+                    DownloadDialog d = new DownloadDialog(this, "下载");
                     Thread download = new Thread(){
                         @Override
                         public void run() {

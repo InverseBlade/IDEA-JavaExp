@@ -61,15 +61,26 @@ public class UI_Operator extends JFrame implements ActionListener {
             int item = jt1.getSelectedRow();
             if(item != -1){
                 FileDialog fileName = new FileDialog(this,"下载文件",FileDialog.SAVE);
-                fileName.setDirectory("E:\\");
+                fileName.setDirectory("C:\\Users\\Dell\\Desktop");
                 fileName.setFile((String)jt1.getModel().getValueAt(item,4));
                 fileName.setVisible(true);
                 if(fileName.getFile()!=null){
-                    if(operator.downloadFile((String)jt1.getValueAt(item, 0), fileName.getDirectory()+fileName.getFile(), null)){
-                        JOptionPane.showMessageDialog(null, "下载完毕!", "提示", JOptionPane.PLAIN_MESSAGE);
-                    }else{
-                        JOptionPane.showMessageDialog(null, "下载失败!", "错误", JOptionPane.ERROR_MESSAGE);
-                    }
+                    DownloadDialog d = new DownloadDialog(this, "下载");
+                    Thread download = new Thread(){
+                        @Override
+                        public void run() {
+                            d.jl2.setText("已下载0%...");
+                            if(operator.downloadFile((String)jt1.getValueAt(item, 0), fileName.getDirectory()+fileName.getFile(),d)){
+                                d.jl2.setText("已下载100%!");
+                                JOptionPane.showMessageDialog(null, "下载完毕!", "提示", JOptionPane.PLAIN_MESSAGE);
+                            }else{
+                                JOptionPane.showMessageDialog(null, "下载失败!", "错误", JOptionPane.ERROR_MESSAGE);
+                            }
+                            d.dispose();
+                        }
+                    };
+                    download.start();
+                    d.setVisible(true);
                 }
             }
         }else if(arg0.getSource()==item3){//退出登录
@@ -125,13 +136,23 @@ public class UI_Operator extends JFrame implements ActionListener {
             if(fileName.getFile()!=null){
                 String descr;
                 if((descr = JOptionPane.showInputDialog("请输入文档描述:"))!=null){
-                    if(operator.uploadFile(fileName.getDirectory()+fileName.getFile(), descr)){
-                        this.refreshTableModel(jt1);
-                        card.show(this.getContentPane(), "文档列表");
-                        JOptionPane.showMessageDialog(null, "上传完毕!", "提示", JOptionPane.PLAIN_MESSAGE);
-                    }else{
-                        JOptionPane.showMessageDialog(null, "文件名重复,上传失败!", "错误", JOptionPane.ERROR_MESSAGE);
-                    }
+                    DownloadDialog d = new DownloadDialog(this, "上传");
+                    Thread download = new Thread(){
+                        @Override
+                        public void run() {
+                            d.jl2.setText("已上传0%...");
+                            if(operator.uploadFile(fileName.getDirectory()+fileName.getFile(), descr, d)){
+                                refreshTableModel(jt1);
+                                card.show(getContentPane(), "文档列表");
+                                JOptionPane.showMessageDialog(null, "上传完毕!", "提示", JOptionPane.PLAIN_MESSAGE);
+                            }else{
+                                JOptionPane.showMessageDialog(null, "文件名重复,上传失败!", "错误", JOptionPane.ERROR_MESSAGE);
+                            }
+                            d.dispose();
+                        }
+                    };
+                    download.start();
+                    d.setVisible(true);
                 }
             }
         }else{//还未实现的功能事件

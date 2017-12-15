@@ -82,15 +82,26 @@ public class UI_Administrator extends JFrame implements ActionListener {
             int item = jt1.getSelectedRow();
             if(item != -1){
                 FileDialog fileName = new FileDialog(this,"下载文件",FileDialog.SAVE);
-                fileName.setDirectory("D:\\");
+                fileName.setDirectory("C:\\Users\\Dell\\Desktop");
                 fileName.setFile((String)jt1.getModel().getValueAt(item,4));
                 fileName.setVisible(true);
                 if(fileName.getFile()!=null){
-                    if(admin.downloadFile((String)jt1.getValueAt(item, 0), fileName.getDirectory()+fileName.getFile(), null)){
-                        JOptionPane.showMessageDialog(null, "下载完毕!", "提示", JOptionPane.PLAIN_MESSAGE);
-                    }else{
-                        JOptionPane.showMessageDialog(null, "下载失败!", "错误", JOptionPane.ERROR_MESSAGE);
-                    }
+                    DownloadDialog d = new DownloadDialog(this, "下载");
+                    Thread download = new Thread(){
+                        @Override
+                        public void run() {
+                            d.jl2.setText("已下载0%...");
+                            if(admin.downloadFile((String)jt1.getValueAt(item, 0), fileName.getDirectory()+fileName.getFile(),d)){
+                                d.jl2.setText("已下载100%!");
+                                JOptionPane.showMessageDialog(null, "下载完毕!", "提示", JOptionPane.PLAIN_MESSAGE);
+                            }else{
+                                JOptionPane.showMessageDialog(null, "下载失败!", "错误", JOptionPane.ERROR_MESSAGE);
+                            }
+                            d.dispose();
+                        }
+                    };
+                    download.start();
+                    d.setVisible(true);
                 }
             }
         }else if(arg0.getSource()==item3){//退出登录
