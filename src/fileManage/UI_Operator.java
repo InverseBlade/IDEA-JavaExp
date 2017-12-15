@@ -65,7 +65,7 @@ public class UI_Operator extends JFrame implements ActionListener {
                 fileName.setFile((String)jt1.getModel().getValueAt(item,4));
                 fileName.setVisible(true);
                 if(fileName.getFile()!=null){
-                    if(operator.downloadFile((String)jt1.getValueAt(item, 0), fileName.getDirectory()+fileName.getFile())){
+                    if(operator.downloadFile((String)jt1.getValueAt(item, 0), fileName.getDirectory()+fileName.getFile(), null)){
                         JOptionPane.showMessageDialog(null, "下载完毕!", "提示", JOptionPane.PLAIN_MESSAGE);
                     }else{
                         JOptionPane.showMessageDialog(null, "下载失败!", "错误", JOptionPane.ERROR_MESSAGE);
@@ -111,7 +111,7 @@ public class UI_Operator extends JFrame implements ActionListener {
                 FileDialog fileName = new FileDialog(this,"下载文件",FileDialog.SAVE);
                 fileName.setVisible(true);
                 if(fileName.getFile()!=null){
-                    if(operator.downloadFile(id, fileName.getDirectory()+fileName.getFile())){
+                    if(operator.downloadFile(id, fileName.getDirectory()+fileName.getFile(),null)){
                         JOptionPane.showMessageDialog(null, "下载完毕!", "提示", JOptionPane.PLAIN_MESSAGE);
                     }else{
                         JOptionPane.showMessageDialog(null, "下载失败!", "错误", JOptionPane.ERROR_MESSAGE);

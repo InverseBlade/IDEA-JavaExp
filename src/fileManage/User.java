@@ -104,7 +104,7 @@ public abstract class User implements Serializable {
 		return row;
 	}
 	
-	public boolean downloadFile(String ID, String ftName){
+	public boolean downloadFile(String ID, String ftName, DownloadDialog d){
 		Doc doc;
 		
 		final int buffer_space = 1024*1024;
@@ -123,11 +123,16 @@ public abstract class User implements Serializable {
                 Long fLength = dis.readLong();
                 System.out.println(fLength);
                 Long count=0L;
+                String temp=null;
 
                 while((rLength=dis.read(buffer))!=-1){
                     fos.write(buffer,0,rLength);
                     fos.flush();
                     count += rLength;
+                    if(d!=null){
+                        temp = String.valueOf((1.0*count/fLength*100));
+                        d.jl2.setText("已下载"+temp.substring(0,temp.indexOf(".")+2)+"%");
+                    }
                     if(count >= fLength)
                         break;
                 }
