@@ -146,7 +146,7 @@ public class UI_Operator extends JFrame implements ActionListener {
                                 card.show(getContentPane(), "文档列表");
                                 JOptionPane.showMessageDialog(null, "上传完毕!", "提示", JOptionPane.PLAIN_MESSAGE);
                             }else{
-                                JOptionPane.showMessageDialog(null, "文件名重复,上传失败!", "错误", JOptionPane.ERROR_MESSAGE);
+                                JOptionPane.showMessageDialog(null, "文件名重复或文件大小为0,上传失败!", "错误", JOptionPane.ERROR_MESSAGE);
                             }
                             d.dispose();
                         }

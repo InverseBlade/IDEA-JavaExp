@@ -27,6 +27,8 @@ public class Operator extends User{
 			System.out.println("文件不存在!");
 			return false;
 		}
+		if(fs.length()==0)
+		    return false;
 
 		fileName = fsName.substring(fsName.lastIndexOf('\\')+1);
 		try{
