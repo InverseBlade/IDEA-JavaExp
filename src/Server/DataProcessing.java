@@ -40,7 +40,7 @@ public  class DataProcessing {
 			con = DriverManager.getConnection(
 			        "jdbc:mysql://localhost:3306/java_db?useUnicode=true&characterEncoding=utf8",
                     "root",
-                    "acs977282" );
+                    "" );
 
 			// create Statement to query database
 			//st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY );
