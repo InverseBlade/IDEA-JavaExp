@@ -132,7 +132,7 @@ public class MyServer  {
                                     dos.write(buffer,0,rLength);
                                     dos.flush();
                                 }
-                                System.out.println("Done!!");
+                                System.out.println("Done!");
 
                                 if(((Request)ois.readObject()).getParam().equals("download is ok"))
                                     fis.close();
