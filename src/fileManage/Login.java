@@ -136,7 +136,7 @@ public class Login extends JFrame implements ActionListener {
 
         //与服务器交互
         try{
-            s=new Socket("127.0.0.1",2017);
+            s=new Socket("120.79.58.235",2017);
 
             ois = new ObjectInputStream(s.getInputStream());
             oos = new ObjectOutputStream(s.getOutputStream());
