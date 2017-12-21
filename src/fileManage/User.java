@@ -1,5 +1,4 @@
 package fileManage;
-import Server.Doc;
 import common.Request;
 import common.Response;
 
@@ -105,7 +104,6 @@ public abstract class User implements Serializable {
 	}
 	
 	public boolean downloadFile(String ID, String ftName, DownloadDialog progress){
-		Doc doc;
 		
 		final int buffer_space = 1024*1024;
 		byte[] buffer = new byte[buffer_space];
