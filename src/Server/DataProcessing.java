@@ -40,7 +40,7 @@ public  class DataProcessing {
 			con = DriverManager.getConnection(
 			        "jdbc:mysql://localhost:3306/java_db?useUnicode=true&characterEncoding=utf8",
                     "root",
-                    "" );
+                    "acs977282" );
 
 			// create Statement to query database
 			//st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY );
@@ -49,23 +49,36 @@ public  class DataProcessing {
 			// update database connection status
 			DataProcessing.connectToDB = true;
 		}catch(Exception e){
+		    e.printStackTrace();
 			DataProcessing.connectToDB = false;
 		}
 	}
+
+	private static void checkDbConect() throws SQLException {
+        if(con.isClosed()){
+            Init();
+        }else if(st.isClosed()){
+            st = con.createStatement();
+        }else
+            return;
+    }
 	
 	public static Doc searchDoc(String ID) throws SQLException,IllegalStateException {
-		Doc temp;
-		rs = st.executeQuery("SELECT * FROM exp_docs WHERE doc_key = '" + ID +"'");
-		if(rs.next()){
-		    temp = new Doc(
-		            rs.getString("doc_key"),
+        if ( !connectToDB )
+            throw new IllegalStateException( "Not Connected to Database" );
+
+        Doc temp;
+        rs = st.executeQuery("SELECT * FROM exp_docs WHERE doc_key = '" + ID +"'");
+        if(rs.next()){
+            temp = new Doc(
+                    rs.getString("doc_key"),
                     rs.getString("creater"),
                     rs.getTimestamp("time"),
                     rs.getString("descr"),
                     rs.getString("file_name")
             );
         }else{
-		    temp = null;
+            temp = null;
         }
         return temp;
 	}
@@ -92,6 +105,9 @@ public  class DataProcessing {
 	} 
 	
 	public static boolean insertDoc(String creator, String description, String filename) throws SQLException,IllegalStateException{
+        if ( !connectToDB )
+            throw new IllegalStateException( "Not Connected to Database" );
+
 		String command;
 
 		rs = st.executeQuery("SELECT * FROM exp_docs WHERE file_name = '"+filename+"'");
@@ -130,43 +146,49 @@ public  class DataProcessing {
 	
 	
 	public static User searchUser(String name, String password) throws SQLException,IllegalStateException {
-		if ( !connectToDB )
-	        throw new IllegalStateException( "Not Connected to Database" );
+        checkDbConect();
+        if ( !connectToDB )
+            throw new IllegalStateException( "Not Connected to Database" );
 
-		//防SQL注入
-        name=name.trim();
-        password=password.trim();
-        if(
-                name.indexOf("'")!=-1 ||
-                        password.indexOf("'")!=-1
-                ){
-            return null;
-        }
-
-		rs = st.executeQuery("SELECT * FROM exp_users WHERE name = '"+name+"'"+" AND password = '"+password+"'");
-		User temp;
-		if(rs.next()){
-		    String role = rs.getString("role");
-		    switch (role){
-                default:
-                    temp = new Browser(name, password, role);
-                    break;
-                case "operator":
-                    temp = new Operator(name, password, role);
-                    break;
-                case "administrator":
-                    temp = new Administrator(name, password, role);
-                    break;
+		try{
+            //防SQL注入
+            name=name.trim();
+            password=password.trim();
+            if(
+                    name.indexOf("'")!=-1 ||
+                            password.indexOf("'")!=-1
+                    ){
+                return null;
             }
-            return temp;
-        }else{
-		    return null;
+
+            rs = st.executeQuery("SELECT * FROM exp_users WHERE name = '"+name+"'"+" AND password = '"+password+"'");
+            User temp;
+            if(rs.next()){
+                String role = rs.getString("role");
+                switch (role){
+                    default:
+                        temp = new Browser(name, password, role);
+                        break;
+                    case "operator":
+                        temp = new Operator(name, password, role);
+                        break;
+                    case "administrator":
+                        temp = new Administrator(name, password, role);
+                        break;
+                }
+                return temp;
+            }else{
+                return null;
+            }
+        }catch (Exception e){
+		    Init();
         }
+        return null;
 	}
 	
 	public static Enumeration<User> getAllUser() throws SQLException,IllegalStateException{
-		if ( !connectToDB )
-	        throw new IllegalStateException( "Not Connected to Database" );
+        if ( !connectToDB )
+            throw new IllegalStateException( "Not Connected to Database" );
 
 		String role, name, password;
 		User temp;
@@ -197,8 +219,9 @@ public  class DataProcessing {
 	
 	
 	public static boolean updateUser(String name, String password, String role) throws SQLException,IllegalStateException{
-		if ( !connectToDB )
-	        throw new IllegalStateException( "Not Connected to Database" );
+        if ( !connectToDB )
+            throw new IllegalStateException( "Not Connected to Database" );
+
         String command;
 
         rs = st.executeQuery("SELECT * FROM exp_users WHERE name = '"+name+"'");
@@ -222,6 +245,9 @@ public  class DataProcessing {
 	}
 	
 	public static boolean insertUser(String name, String password, String role) throws SQLException,IllegalStateException{
+        if ( !connectToDB )
+            throw new IllegalStateException( "Not Connected to Database" );
+
         String command;
 
         rs = st.executeQuery("SELECT * FROM exp_users WHERE name = '"+name+"'");
@@ -246,8 +272,8 @@ public  class DataProcessing {
 	}
 	
 	public static boolean deleteUser(String name) throws SQLException,IllegalStateException{
-		if ( !connectToDB )
-	        throw new IllegalStateException( "Not Connected to Database" );
+        if ( !connectToDB )
+            throw new IllegalStateException( "Not Connected to Database" );
 		
 		if(st.executeUpdate("DELETE FROM exp_users WHERE name = '" + name + "'")!=0){
 		    return true;

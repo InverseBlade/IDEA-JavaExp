@@ -233,6 +233,11 @@ public class MyServer implements Runnable  {
             }
         }catch (Exception err){
             err.printStackTrace();
+            try{
+                oos.writeObject(new Response(false, "serious problem", ""));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 }
