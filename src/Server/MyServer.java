@@ -7,12 +7,12 @@ import common.*;
 import fileManage.*;
 
 public class MyServer implements Runnable  {
-    static ServerSocket ss=null;
-    Socket s=null;
-    ObjectOutputStream oos=null;
-    ObjectInputStream ois=null;
+    private static ServerSocket ss=null;
+    private Socket s=null;
+    private ObjectOutputStream oos=null;
+    private ObjectInputStream ois=null;
 
-    private final String upload_path = "UploadFile\\";
+    private static final String upload_path = "UploadFile\\";
 
     public static void main(String[] args) throws Exception  {
         try{
