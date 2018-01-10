@@ -172,7 +172,7 @@ public class Login extends JFrame implements ActionListener {
         user.setS(s);
         user.setOis(ois);
         user.setOos(oos);
-        this.addWindowListener(new DefaultWindowListener(user));
+        this.addWindowListener(new DefaultWindowListener(user, this));
 	}
 
 }

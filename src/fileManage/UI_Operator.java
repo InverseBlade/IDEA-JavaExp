@@ -89,7 +89,7 @@ public class UI_Operator extends JFrame implements ActionListener {
                 this.operator.exitSystem();
             };
         }else if(arg0.getSource()==item1){//显示文档列表
-            this.refreshTableModel(jt1);
+            refreshTableModel(jt1);
             card.show(this.getContentPane(), "文档列表");
         }else if(arg0.getSource()==item4){//修改密码对话框
             JPanel container = new JPanel();
@@ -239,7 +239,7 @@ public class UI_Operator extends JFrame implements ActionListener {
 
         //JFrame最终设置
         //this.setResizable(false);
-        this.addWindowListener(new DefaultWindowListener(operator));
+        this.addWindowListener(new DefaultWindowListener(operator, this));
         this.setVisible(true);
     }
 
@@ -252,9 +252,15 @@ public class UI_Operator extends JFrame implements ActionListener {
     }
 
     private void refreshTableModel(JTable jt){
-        if(jt == jt1){
-            jt.setModel(new DefaultTableModel(this.operator.showFileList(),col_doc_name));
-            this.setJTableWidth(jt);
-        }
+        (new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                if(jt == jt1){
+                    jt.setModel(new DefaultTableModel(operator.showFileList(),col_doc_name));
+                    setJTableWidth(jt);
+                }
+            }
+        }).start();
     }
 }

@@ -7,6 +7,12 @@ import javax.swing.*;
 public class DefaultWindowListener implements WindowListener {
 
     private User user;
+    private JFrame window;
+
+    public DefaultWindowListener(User user, JFrame window){
+        this.user = user;
+        this.window = window;
+    }
 
     public DefaultWindowListener(User user) {
         this.user = user;
@@ -19,6 +25,9 @@ public class DefaultWindowListener implements WindowListener {
 
     @Override
     public void windowClosing(WindowEvent e) {
+        if(window!=null){
+            window.setVisible(false);
+        }
         System.out.println("给个好评呗!~~");
         user.exitSystem();
     }

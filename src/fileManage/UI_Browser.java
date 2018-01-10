@@ -89,8 +89,14 @@ public class UI_Browser extends JFrame implements ActionListener {
                 this.browser.exitSystem();
             };
         }else if(arg0.getSource()==item1){//显示文档列表
-            this.refreshTableModel(jt1);
             card.show(this.getContentPane(), "文档列表");
+            (new Thread(){
+                @Override
+                public void run() {
+                    super.run();
+                    refreshTableModel(jt1);
+                }
+            }).start();
         }else if(arg0.getSource()==item4){//修改密码对话框
             JPanel container = new JPanel();
             JPanel pad1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -209,7 +215,7 @@ public class UI_Browser extends JFrame implements ActionListener {
 
         //JFrame最终设置
         //this.setResizable(false);
-        this.addWindowListener(new DefaultWindowListener(this.browser));
+        this.addWindowListener(new DefaultWindowListener(this.browser, this));
         this.setVisible(true);
     }
 

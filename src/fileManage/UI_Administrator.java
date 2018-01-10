@@ -110,7 +110,7 @@ public class UI_Administrator extends JFrame implements ActionListener {
                 this.admin.exitSystem();
             };
         }else if(arg0.getSource()==item1){//显示文档列表
-            this.refreshTableModel(jt1);
+            refreshTableModel(jt1);
             card.show(this.getContentPane(), "文档列表");
         }else if(arg0.getSource()==item4){//修改密码对话框
             String passwd = null;
@@ -301,7 +301,7 @@ public class UI_Administrator extends JFrame implements ActionListener {
 
         //JFrame最终设置
         //this.setResizable(false);
-        this.addWindowListener(new DefaultWindowListener(this.admin));
+        this.addWindowListener(new DefaultWindowListener(this.admin, this));
         this.setVisible(true);
     }
 
@@ -314,12 +314,18 @@ public class UI_Administrator extends JFrame implements ActionListener {
     }
 
     private void refreshTableModel(JTable jt){
-        if(jt == jt2){
-            jt2.setModel(new DefaultTableModel(admin.listUser(),col_user_name));
-        }else if(jt == jt1){
-            jt.setModel(new DefaultTableModel(this.admin.showFileList(),col_doc_name));
-            this.setJTableWidth(jt);
-        }
+        (new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                if(jt == jt2){
+                    jt2.setModel(new DefaultTableModel(admin.listUser(),col_user_name));
+                }else if(jt == jt1){
+                    jt.setModel(new DefaultTableModel(admin.showFileList(),col_doc_name));
+                    setJTableWidth(jt);
+                }
+            }
+        }).start();
     }
 
     private String inputRole() {
