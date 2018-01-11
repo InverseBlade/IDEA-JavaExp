@@ -190,6 +190,24 @@ public class MyServer implements Runnable  {
                         }
                         break;
                     }
+                    case "deleteFile":
+                    {
+                        String fileId = req.getParam();
+                        String fileName = null;
+                        File f = null;
+                        Doc doc = null;
+
+                        if((doc=DataProcessing.searchDoc(fileId))!=null){
+                            f = new File(upload_path + doc.getFilename());
+                            if(f.exists() && DataProcessing.deleteDoc(fileId)){
+                                f.delete();
+                                oos.writeObject(new Response(true,null,null));
+                                break;
+                            }
+                        }
+                        oos.writeObject(new Response(false, "File not exist",null));
+                        break;
+                    }
                     case "addUser":
                     {
                         String[] param = req.getParam().split("[|]");

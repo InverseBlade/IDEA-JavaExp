@@ -63,6 +63,18 @@ public class Operator extends User{
 		}
 		return false;
 	}
+
+	public boolean deleteDoc(String ID){
+	    try{
+	        oos.writeObject(new Request("deleteFile",ID));
+	        if(((Response)ois.readObject()).isIfRun()){
+	            return true;
+            }
+        }catch (Exception e){
+	        e.printStackTrace();
+        }
+	    return false;
+    }
 	
 	public void showMenu(){
 		new UI_Operator(this);

@@ -42,6 +42,7 @@ public class UI_Operator extends JFrame implements ActionListener {
 
     JButton jb1 = new JButton("下载");
     JButton jb2 = new JButton("上传");
+    JButton jb3 = new JButton("删除");
     JLabel jl1 = new JLabel("文档列表");
     //JTable
     JTable jt1 = new JTable(){
@@ -155,6 +156,20 @@ public class UI_Operator extends JFrame implements ActionListener {
                     d.setVisible(true);
                 }
             }
+        }else if(arg0.getSource()==jb3){   //删除文档
+            int item = jt1.getSelectedRow();
+            if(item != -1){
+                if(JOptionPane.showConfirmDialog(this, "确认删除文档: "+(String)jt1.getModel().getValueAt(item, 4)+"吗?")==JOptionPane.OK_OPTION){
+                    String id = (String)jt1.getModel().getValueAt(item, 0);
+                    if(this.operator.deleteDoc(id)){
+                        refreshTableModel(jt1);
+                        card.show(getContentPane(), "文档列表");
+                        JOptionPane.showMessageDialog(null, "删除成功!", "提示", JOptionPane.PLAIN_MESSAGE);
+                    }else{
+                        JOptionPane.showMessageDialog(null, "删除失败!", "错误", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
         }else{//还未实现的功能事件
             JOptionPane.showMessageDialog(null, "Warnning!", "此功能还未实现...", JOptionPane.WARNING_MESSAGE);
         }
@@ -196,6 +211,7 @@ public class UI_Operator extends JFrame implements ActionListener {
         js.getViewport().setBackground(Color.white);
         pad3.add(jb1);
         pad3.add(jb2);
+        pad3.add(jb3);
 
         pad_1.add("North",pad1);
         js.setBounds(10,this.getHeight()/12,this.getWidth()-25,this.getHeight()/3*2);
@@ -228,6 +244,7 @@ public class UI_Operator extends JFrame implements ActionListener {
         //operator
         item9.addActionListener(this);
         jb2.addActionListener(this);
+        jb3.addActionListener(this);
 
         //绘制欢迎页面
         JLabel welcome = new JLabel(operator.getName()+",欢迎来到档案录入人员界面!");welcome.setFont(new Font("楷体",Font.BOLD,30));

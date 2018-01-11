@@ -82,7 +82,17 @@ public  class DataProcessing {
         }
         return temp;
 	}
-	
+
+	public static boolean deleteDoc(String ID) throws SQLException,IllegalStateException{
+        if ( !connectToDB )
+            throw new IllegalStateException( "Not Connected to Database" );
+
+        if(st.executeUpdate("DELETE FROM exp_docs WHERE doc_key = '"+ID+"'")!=0){
+            return true;
+        }
+	    return false;
+    }
+
 	public static Enumeration<Doc> getAllDocs() throws SQLException,IllegalStateException{
         if ( !connectToDB )
             throw new IllegalStateException( "Not Connected to Database" );
